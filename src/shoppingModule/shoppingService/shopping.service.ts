@@ -11,70 +11,80 @@ import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 @Injectable()
 export class ShoppingService {
     constructor(
-        @InjectRepository(ShoppingEntity)
+        @InjectRepository(ShoppingRepository)
         private shoppingRepository: ShoppingRepository
     ) {}
 
     async getitems(filterDto: GetItemsFilterDto): Promise<ShoppingEntity[]> {
-        const {status, search} = filterDto
-        const query = this.shoppingRepository.createQueryBuilder("item")
+        // const {status, search} = filterDto
+        // const query = this.shoppingRepository.createQueryBuilder("item")
        
-        if(status) {
-            query.andWhere("item.status = :status", {status})
-        }
+        // if(status) {
+        //     query.andWhere("item.status = :status", {status})
+        // }
 
-        if(search) {
-            query.andWhere("item.item LIKE :search OR item.price LIKE :search", {search: `%${search}%`})
-        }
+        // if(search) {
+        //     query.andWhere("item.item LIKE :search OR item.price LIKE :search", {search: `%${search}%`})
+        // }
         
-        const item = await query.getMany()
-        return item
+        // const item = await query.getMany()
+        // return item
+
+        return this.shoppingRepository.getitems(filterDto)
     }
 
     async createList(createListDto: CreateListDto): Promise<ShoppingEntity> {
-        const {item, price} = createListDto
+        // const {item, price} = createListDto
 
-        const list = new ShoppingEntity()
-        list.item = item;
-        list.price = price;
-        list.status = ShoppingStatus.NOT_PAID
-        await list.save()
+        // const list = new ShoppingEntity()
+        // list.item = item;
+        // list.price = price;
+        // list.status = ShoppingStatus.NOT_PAID
+        // await list.save()
 
-        return list    
+        // return list    
+
+        return this.shoppingRepository.createList(createListDto)
     }
 
     async getItemWithId(id: string): Promise<ShoppingEntity> {
-        const itemID = await this.shoppingRepository.findOne({
-            where: {
-                id,
-            }
-        })
+        // const itemID = await this.shoppingRepository.findOne({
+        //     where: {
+        //         id,
+        //     }
+        // })
 
-        if(!itemID) {
-            throw new NotFoundException(`Item with id ${id} not found`)
-        }
+        // if(!itemID) {
+        //     throw new NotFoundException(`Item with id ${id} not found`)
+        // }
 
-        return itemID
+        // return itemID
+
+        return this.shoppingRepository.getItemWithId(id)
     }
 
     async updateItem(id:string, status:ShoppingStatus, item?: string, price?:string ): Promise<ShoppingEntity> {
-        const singleItem = await this.getItemWithId(id)
-        singleItem.item = item
-        singleItem.price = price
-        singleItem.status = status
+        // const singleItem = await this.getItemWithId(id)
+        // singleItem.item = item
+        // singleItem.price = price
+        // singleItem.status = status
 
-        await singleItem.save()
-        return singleItem
+        // await singleItem.save()
+        // return singleItem
+
+        return this.shoppingRepository.updateItem(id, status, item, price )
     }
 
      deleteItem = async(id: string): Promise<string> => {
-        const result = await this.shoppingRepository.delete(id)
+        // const result = await this.shoppingRepository.delete(id)
         
-        if(!result) {
-            throw new NotFoundException()
-        }
+        // if(!result) {
+        //     throw new NotFoundException()
+        // }
 
-        return id
+        // return id
+
+        return this.shoppingRepository.deleteItem(id)
     }
 
 }
