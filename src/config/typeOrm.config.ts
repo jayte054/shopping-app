@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { UserEntity } from "src/auth/userEntity/user.entity";
 import { ShoppingEntity } from "src/shoppingModule/entity/shopping.entity";
 
 
@@ -9,6 +10,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username:"postgres",
     password: "1234",
     database: "shoppingappmanager",
-    entities: [ShoppingEntity],
+    entities: [ShoppingEntity, UserEntity],
     synchronize: true
 }
