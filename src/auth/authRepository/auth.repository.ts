@@ -1,11 +1,11 @@
 
 
+import {  Injectable } from "@nestjs/common";
 import { UserEntity } from "../userEntity/user.entity";
+import { ConflictException, InternalServerErrorException } from "@nestjs/common/exceptions";
 import {Repository, DataSource} from "typeorm"
 import { AuthCredentialsDto } from "../dto/authCredentials.dto";
-import { ConflictException, Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt"
-import { InternalServerErrorException } from "@nestjs/common/exceptions/internal-server-error.exception";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -39,8 +39,10 @@ export class UserRepository extends Repository<UserEntity> {
         return await bcrypt.hash(password, salt)
     }
 
-    async validateUserPassword(authCredentials: AuthCredentialsDto): Promise<string> {
-        const {username, password} = authCredentials
+    //=======sign in===============
+
+    async validateUserPassword(authCredentialsdto: AuthCredentialsDto): Promise<string> {
+        const {username, password} = authCredentialsdto 
 
         const user = await this.findOne({
             where: {username}

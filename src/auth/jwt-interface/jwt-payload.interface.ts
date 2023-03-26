@@ -1,5 +1,3 @@
-
-
-export class JwtPayload {
+export interface JwtPayload {
     username: string;
 }

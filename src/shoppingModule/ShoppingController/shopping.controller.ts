@@ -1,5 +1,6 @@
 import { ParseIntPipe, ValidationPipe } from "@nestjs/common";
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes } from "@nestjs/common/decorators";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UsePipes } from "@nestjs/common/decorators";
+import { AuthGuard } from "@nestjs/passport";
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.dto";
 import { ShoppingStatusValidationPipe } from "src/pipes/shopping-status-validation.pipe";
@@ -8,6 +9,7 @@ import { ShoppingService } from "../shoppingService/shopping.service";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 
 @Controller("shopper")
+@UseGuards(AuthGuard())
 export class ShoppingController {
     constructor(private shoppingService: ShoppingService) {}
 
