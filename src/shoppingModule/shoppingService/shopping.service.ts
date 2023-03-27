@@ -2,6 +2,7 @@
 
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UserEntity } from "src/auth/userEntity/user.entity";
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.dto";
 import { ShoppingEntity } from "../entity/shopping.entity";
@@ -15,7 +16,10 @@ export class ShoppingService {
         private shoppingRepository: ShoppingRepository
     ) {}
 
-    async getitems(filterDto: GetItemsFilterDto): Promise<ShoppingEntity[]> {
+    async getitems(
+        filterDto: GetItemsFilterDto,
+        user: UserEntity
+        ): Promise<ShoppingEntity[]> {
         // const {status, search} = filterDto
         // const query = this.shoppingRepository.createQueryBuilder("item")
        
@@ -30,10 +34,13 @@ export class ShoppingService {
         // const item = await query.getMany()
         // return item
 
-        return this.shoppingRepository.getitems(filterDto)
+        return this.shoppingRepository.getitems(filterDto, user)
     }
 
-    async createList(createListDto: CreateListDto): Promise<ShoppingEntity> {
+    async createList(
+        createListDto: CreateListDto,
+        user: UserEntity
+        ): Promise<ShoppingEntity> {
         // const {item, price} = createListDto
 
         // const list = new ShoppingEntity()
@@ -44,10 +51,13 @@ export class ShoppingService {
 
         // return list    
 
-        return this.shoppingRepository.createList(createListDto)
+        return this.shoppingRepository.createList(createListDto, user)
     }
 
-    async getItemWithId(id: string): Promise<ShoppingEntity> {
+    async getItemWithId(
+        id: string,
+        user: UserEntity
+        ): Promise<ShoppingEntity> {
         // const itemID = await this.shoppingRepository.findOne({
         //     where: {
         //         id,
@@ -60,10 +70,15 @@ export class ShoppingService {
 
         // return itemID
 
-        return this.shoppingRepository.getItemWithId(id)
+        return this.shoppingRepository.getItemWithId(id, user)
     }
 
-    async updateItem(id:string, status:ShoppingStatus, item?: string, price?:string ): Promise<ShoppingEntity> {
+    async updateItem(
+        id:string, 
+        status:ShoppingStatus,
+        user: UserEntity, 
+        item?: string, 
+        price?:string ): Promise<ShoppingEntity> {
         // const singleItem = await this.getItemWithId(id)
         // singleItem.item = item
         // singleItem.price = price
@@ -72,10 +87,13 @@ export class ShoppingService {
         // await singleItem.save()
         // return singleItem
 
-        return this.shoppingRepository.updateItem(id, status, item, price )
+        return this.shoppingRepository.updateItem(id, status, user, item, price )
     }
 
-     deleteItem = async(id: string): Promise<string> => {
+     deleteItem = async(
+        id: string,
+        user: UserEntity
+        ): Promise<string> => {
         // const result = await this.shoppingRepository.delete(id)
         
         // if(!result) {
@@ -84,7 +102,7 @@ export class ShoppingService {
 
         // return id
 
-        return this.shoppingRepository.deleteItem(id)
+        return this.shoppingRepository.deleteItem(id, user)
     }
 
 }

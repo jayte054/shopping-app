@@ -5,6 +5,7 @@ import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 import { NotFoundException } from "@nestjs/common";
+import { UserEntity } from "src/auth/userEntity/user.entity";
 
 @Injectable()
 export class ShoppingRepository extends Repository<ShoppingEntity> {
@@ -12,9 +13,14 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
         super(ShoppingEntity, dataSource.createEntityManager())
     }
 
-        async getitems(filterDto: GetItemsFilterDto): Promise<ShoppingEntity[]> {
+        async getitems(
+            filterDto: GetItemsFilterDto,
+            user: UserEntity
+            ): Promise<ShoppingEntity[]> {
             const {status, search} = filterDto
             const query = this.createQueryBuilder("item")
+
+            query.where("item.userId = :userId", {userId: user.id})
            
             if(status) {
                 query.andWhere("item.status = :status", {status})
@@ -28,22 +34,32 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             return item
         }
 
-        async createList(createListDto: CreateListDto): Promise<ShoppingEntity> {
+        async createList(
+            createListDto: CreateListDto,
+            user: UserEntity
+            ): Promise<ShoppingEntity> {
             const {item, price} = createListDto
     
             const list = new ShoppingEntity()
             list.item = item;
             list.price = price;
+            list.user = user
             list.status = ShoppingStatus.NOT_PAID
             await list.save()
+
+            delete list.user
     
             return list    
         }
 
-        async getItemWithId(id: string): Promise<ShoppingEntity> {
+        async getItemWithId(
+            id: string,
+            user: UserEntity
+            ): Promise<ShoppingEntity> {
             const itemID = await this.findOne({
                 where: {
                     id,
+                    userId: user.id
                 }
             })
     
@@ -54,8 +70,13 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             return itemID
         }
 
-        async updateItem(id:string, status:ShoppingStatus, item?: string, price?:string ): Promise<ShoppingEntity> {
-            const singleItem = await this.getItemWithId(id)
+        async updateItem(
+            id:string, 
+            status:ShoppingStatus, 
+            user: UserEntity,
+            item?: string, 
+            price?:string ): Promise<ShoppingEntity> {
+            const singleItem = await this.getItemWithId(id, user)
             singleItem.item = item
             singleItem.price = price
             singleItem.status = status
@@ -64,8 +85,11 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             return singleItem
         }
 
-        deleteItem = async(id: string): Promise<string> => {
-            const result = await this.delete(id)
+        deleteItem = async(
+            id: string,
+            user: UserEntity 
+            ): Promise<string> => {
+            const result = await this.delete({id, userId: user.id})
             
             if(!result) {
                 throw new NotFoundException()

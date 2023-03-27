@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { UserEntity } from "src/auth/userEntity/user.entity";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
 import {v4 as uuid} from "uuid"
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 
@@ -15,5 +16,11 @@ export class ShoppingEntity extends BaseEntity {
 
     @Column()
     status: ShoppingStatus;
+
+    @ManyToOne(type => UserEntity, user => user.items, {eager: false})
+    user: UserEntity
+
+    @Column()
+    userId: string
 
 }
