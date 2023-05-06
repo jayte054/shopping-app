@@ -1,4 +1,4 @@
-import { ParseIntPipe, ValidationPipe } from "@nestjs/common";
+import { Logger, ParseIntPipe, ValidationPipe } from "@nestjs/common";
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UsePipes } from "@nestjs/common/decorators";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/auth/getUser.Decorator/get-user.decorator";
@@ -13,12 +13,14 @@ import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 @Controller("shopper")
 @UseGuards(AuthGuard())
 export class ShoppingController {
+    private logger = new Logger("ShoppingController")
     constructor(private shoppingService: ShoppingService) {}
 
     @Get("/items")
     getItems(@Query(ValidationPipe) filterDto: GetItemsFilterDto,
     @GetUser() user: UserEntity
     ): Promise<ShoppingEntity[]>{
+        this.logger.verbose(`User "${user.username}" retrieved all items`)
         return this.shoppingService.getitems(filterDto, user)
     }
 
@@ -27,7 +29,7 @@ export class ShoppingController {
     createList(@Body() createListDto: CreateListDto,
     @GetUser() user: UserEntity
     ): Promise<ShoppingEntity> {
-
+        this.logger.verbose(`User "${user.username} just created a new list. Data: ${createListDto}`)
         return this.shoppingService.createList(createListDto, user)
     }
 
@@ -35,6 +37,7 @@ export class ShoppingController {
     getItemWithId(@Param("id")id: string,
     @GetUser() user: UserEntity
     ): Promise<ShoppingEntity> {
+        this.logger.verbose(`user "${user.username}" retrieved shopping list with id: ${id}`)
         return this.shoppingService.getItemWithId(id, user)
     }
 
@@ -46,6 +49,7 @@ export class ShoppingController {
         @Body("status", ShoppingStatusValidationPipe) status: ShoppingStatus,
         @GetUser() user: UserEntity 
     ): Promise<ShoppingEntity> {
+        this.logger.verbose(`User "${user.username}" just updated list with id "${id}. Status: ${status}. item: ${item}. price: ${price}`)
         return this.shoppingService.updateItem(id, status, user, item, price, )
     }
 
@@ -54,6 +58,7 @@ export class ShoppingController {
         @Param("id") id: string,
         @GetUser() user: UserEntity
         ): Promise<string> {
+            this.logger.verbose(`User "${user.username}" just deleted a list with id: "${id}"`)
         return this.shoppingService.deleteItem(id, user)
     }
 }

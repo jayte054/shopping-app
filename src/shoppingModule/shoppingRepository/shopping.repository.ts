@@ -4,11 +4,12 @@ import { Repository, DataSource } from "typeorm"
 import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.dto";
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
-import { NotFoundException } from "@nestjs/common";
+import { InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 
 @Injectable()
 export class ShoppingRepository extends Repository<ShoppingEntity> {
+    private logger = new Logger("shoppingRepository")
     constructor(private dataSource: DataSource) {
         super(ShoppingEntity, dataSource.createEntityManager())
     }
@@ -30,8 +31,13 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
                 query.andWhere("item.item LIKE :search OR item.price LIKE :search", {search: `%${search}%`})
             }
             
+            try{
             const item = await query.getMany()
             return item
+            }catch(error){
+                this.logger.error(`User "${user.username}" failed to retrieve all shopping lists. Data ${filterDto}`)
+                throw new InternalServerErrorException()
+            }
         }
 
         async createList(
@@ -45,7 +51,13 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             list.price = price;
             list.user = user
             list.status = ShoppingStatus.NOT_PAID
+
+            try{
             await list.save()
+            }catch(error){
+                this.logger.error(`user "${user.username}" failed to create list. Data: ${createListDto}`)
+                throw new InternalServerErrorException()
+            }
 
             delete list.user
     
@@ -66,8 +78,14 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             if(!itemID) {
                 throw new NotFoundException(`Item with id ${id} not found`)
             }
-    
+
+            try{
             return itemID
+            }catch(error){
+                this.logger.error(`User "${user.username}" failed to get user with id "${id}`)
+                throw new InternalServerErrorException()
+            }
+    
         }
 
         async updateItem(
@@ -80,8 +98,14 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             singleItem.item = item
             singleItem.price = price
             singleItem.status = status
-    
+
+            try{
             await singleItem.save()
+            }catch(error){
+                this.logger.error(`User "${user.username}" failed to update item with id "${id}`)
+                throw new InternalServerErrorException()
+            }
+    
             return singleItem
         }
 
@@ -94,7 +118,12 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             if(!result) {
                 throw new NotFoundException()
             }
-    
+            
+            try{
             return id
+            }catch(error){
+                this.logger.error(`User "${user.username}" failed to delete item with id "${id}"`)
+                throw new InternalServerErrorException()
+            }
         }
 }

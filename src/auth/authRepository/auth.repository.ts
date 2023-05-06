@@ -54,4 +54,9 @@ export class UserRepository extends Repository<UserEntity> {
             return null
         }
     }
+
+    async signOut(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+         await this.signOut(authCredentialsDto)
+        return "user successfully signed out"
+    }
 }
