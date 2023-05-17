@@ -29,7 +29,8 @@ export class ShoppingController {
     createList(@Body() createListDto: CreateListDto,
     @GetUser() user: UserEntity
     ): Promise<ShoppingEntity> {
-        this.logger.verbose(`User "${user.username} just created a new list. Data: ${createListDto}`)
+        
+        this.logger.verbose(`User ${user.username} just created a new list. Data: ${createListDto}`)
         return this.shoppingService.createList(createListDto, user)
     }
 

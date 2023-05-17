@@ -1,9 +1,10 @@
 
 
-import {BaseEntity, Entity,Unique, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm"
+import {BaseEntity, Entity,Unique, PrimaryGeneratedColumn, Column, OneToMany, OneToOne} from "typeorm"
 import {v4 as uuid} from "uuid"
 import * as bcrypt from "bcrypt"
 import { ShoppingEntity } from "src/shoppingModule/entity/shopping.entity";
+import { ProfileEntity } from "../../profile/profileEntity/profile.entity";
 
 @Entity()
 @Unique(["username"])
@@ -21,7 +22,11 @@ export class UserEntity extends BaseEntity {
     salt: string;
 
     @OneToMany(type => ShoppingEntity, item => item.user, {eager: true})
-    items: ShoppingEntity[]
+    items: ShoppingEntity[];
+
+
+    @OneToMany(() => ProfileEntity, (profile) => profile.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
+    profiles: ProfileEntity[];
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

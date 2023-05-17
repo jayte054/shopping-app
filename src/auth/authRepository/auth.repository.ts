@@ -25,6 +25,7 @@ export class UserRepository extends Repository<UserEntity> {
 
         try{
         await user.save()
+        console.log(user)
         }catch(error){
             if(error.code === "23505") {
                 throw new ConflictException("username already exists")
@@ -41,22 +42,37 @@ export class UserRepository extends Repository<UserEntity> {
 
     //=======sign in===============
 
-    async validateUserPassword(authCredentialsdto: AuthCredentialsDto): Promise<string> {
-        const {username, password} = authCredentialsdto 
+    // async validateUserPassword(authCredentialsdto: AuthCredentialsDto): Promise<string> {
+    //     const {username, password} = authCredentialsdto 
 
-        const user = await this.findOne({
-            where: {username}
-        })
+    //     const user = await this.findOne({
+    //         where: {username},
+    //         select: ['id', 'username', 'password', 'salt'],
+    //     })
+    //     console.log(user)
 
-        if(user && await user.validatePassword(password)) {
-            return user.username 
+    //     if(user && (await user.validatePassword(password))) {
+    //         return user.username 
+    //     } else {
+    //         return null
+    //     }
+    // }
+
+    async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+        const { username, password } = authCredentialsDto;
+      
+        const queryBuilder = this.createQueryBuilder('user');
+        queryBuilder
+          .select(['user.id', 'user.username', 'user.password', 'user.salt'])
+          .where('user.username = :username', { username });
+      
+        const user = await queryBuilder.getOne();
+      
+        if (user && (await user.validatePassword(password))) {
+          return user.username;
         } else {
-            return null
+          return null;
         }
-    }
-
-    async signOut(authCredentialsDto: AuthCredentialsDto): Promise<string> {
-         await this.signOut(authCredentialsDto)
-        return "user successfully signed out"
-    }
+      }
+   
 }
