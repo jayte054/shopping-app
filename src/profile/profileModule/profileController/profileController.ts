@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UsePipes } from "@nestjs/common/decorators";
+import { Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes } from "@nestjs/common/decorators";
 import { AuthGuard } from "@nestjs/passport";
 import { ProfileService } from "../profileService/profileService";
 import { Logger, ValidationPipe } from "@nestjs/common";
@@ -24,4 +24,12 @@ export class ProfileController {
         return this.profileService.createProfile(createProfileDto, user)
 
          }
+
+   
+
+    @Get(':id')
+    async getProfile(@Param('id') id: any): Promise<ProfileEntity> {
+         this.logger.verbose(`User has fetched his profile`)
+        return this.profileService.getProfile(id);
+    }
 }

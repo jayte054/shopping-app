@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common/decorators";
-import { InternalServerErrorException, Logger } from "@nestjs/common";
+import { InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 import { CreateProfileDto } from "src/dto/createProfileDto/createProfileDto";
 import { ProfileEntity } from "src/profile/profileEntity/profile.entity";
-import {  Repository,DataSource } from "typeorm";
+import {  Repository,DataSource, FindOneOptions } from "typeorm";
 
 @Injectable()
 export class ProfileRepository extends Repository<ProfileEntity> {
@@ -11,6 +11,20 @@ export class ProfileRepository extends Repository<ProfileEntity> {
     constructor(private dataSource: DataSource){
         super(ProfileEntity, dataSource.createEntityManager())
     }
+
+    async getProfile(profileId: any): Promise<ProfileEntity> {
+        const options: FindOneOptions<ProfileEntity> = {
+          where: { id: profileId },
+        };
+        const profile: ProfileEntity = await this.findOne(options);
+      
+        if (!profile) {
+          this.logger.error(`Profile not found`);
+          throw new NotFoundException('Profile not found');
+        }
+      
+        return profile;
+      }
 
     async createProfile(
         createProfileDto: CreateProfileDto,
@@ -39,4 +53,6 @@ export class ProfileRepository extends Repository<ProfileEntity> {
         delete profile.user
         return  profile
     }
+
+    
 }

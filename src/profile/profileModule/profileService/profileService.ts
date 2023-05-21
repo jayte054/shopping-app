@@ -12,6 +12,10 @@ export class ProfileService {
         private profileReposistory: ProfileRepository
     ){}
 
+    async getProfile(user: UserEntity): Promise<ProfileEntity> {
+        return this.profileReposistory.getProfile(user)
+    }
+
     async createProfile(
         createProfileDto: CreateProfileDto,
         user: UserEntity
