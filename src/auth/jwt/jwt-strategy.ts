@@ -21,12 +21,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })}
 
     async validate(payload: JwtPayload): Promise<UserEntity> {
-        const {username} = payload
+        console.log(payload)
+        const {userdetails} = payload
 
         const queryBuilder = this.userRepository.createQueryBuilder("user");
         queryBuilder
         .select(['user.id', 'user.username', 'user.password', 'user.salt'])
-        .where('user.username = :username', { username });
+        .where('user.username = :username', { username: userdetails })
 
         const user = await queryBuilder.getOne()
 
@@ -35,9 +36,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         //     select: ["id", "username", "password", "salt"] 
         // })
 
+
         if(!user) {
             throw new UnauthorizedException()
         }
+        const response = user.id
+        console.log(response)
+
         return user
     }
 }

@@ -58,7 +58,7 @@ export class UserRepository extends Repository<UserEntity> {
     //     }
     // }
 
-    async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+    async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<any> {
         const { username, password } = authCredentialsDto;
       
         const queryBuilder = this.createQueryBuilder('user');
@@ -69,7 +69,7 @@ export class UserRepository extends Repository<UserEntity> {
         const user = await queryBuilder.getOne();
       
         if (user && (await user.validatePassword(password))) {
-          return user.username;
+          return {user};
         } else {
           return null;
         }

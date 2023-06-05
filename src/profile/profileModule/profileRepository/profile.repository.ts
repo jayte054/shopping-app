@@ -14,7 +14,7 @@ export class ProfileRepository extends Repository<ProfileEntity> {
 
     async getProfile(profileId: any): Promise<ProfileEntity> {
         const options: FindOneOptions<ProfileEntity> = {
-          where: { id: profileId },
+          where: { userId: profileId },
         };
         const profile: ProfileEntity = await this.findOne(options);
       

@@ -27,9 +27,9 @@ export class ProfileController {
 
    
 
-    @Get(':id')
-    async getProfile(@Param('id') id: any): Promise<ProfileEntity> {
+    @Get(':userId')
+    async getProfile(@Param('userId') userId: any): Promise<ProfileEntity> {
          this.logger.verbose(`User has fetched his profile`)
-        return this.profileService.getProfile(id);
+        return this.profileService.getProfile(userId);
     }
 }

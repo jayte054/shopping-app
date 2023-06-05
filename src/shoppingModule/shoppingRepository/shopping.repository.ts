@@ -55,7 +55,8 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             try{
             await list.save()
             }catch(error){
-                this.logger.error(`user "${user.username}" failed to create list. Data: ${createListDto}`)
+                console.error(error)
+                this.logger.error(`user "${user}" failed to create list. Data: ${createListDto}`)
                 throw new InternalServerErrorException()
             }
 
