@@ -23,8 +23,8 @@ export class AuthService {
     async signIn(authCredentialsDto: AuthCredentialsDto):  Promise<{accessToken: any}> {
         const userdetails = await this.userRepository.validateUserPassword(authCredentialsDto)
         console.log(userdetails)
-        const username = userdetails
-        console.log(username)
+         const {username, id} = userdetails
+        // console.log(username)
         // const id = userdetails.id
         // console.log(userdetails)
         
@@ -33,14 +33,14 @@ export class AuthService {
             throw new UnauthorizedException("invalid credentials")
         }
 
-        const payload: JwtPayload = { userdetails };
+        const payload: JwtPayload = { username, id };
         console.log(payload)
         const accessToken = await this.jwtService.sign(payload)
         console.log(accessToken)
-        this.logger.debug(`Generated JWT Token with payload: ${payload}`)
+        this.logger.debug(`Generated JWT Token with payload: ${JSON.stringify(payload)}`)
         const response = {
             "accessToken": accessToken,
-            "username": username,
+            "user": userdetails
             // "id": id
         }
         return response

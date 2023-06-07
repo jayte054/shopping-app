@@ -22,12 +22,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(payload: JwtPayload): Promise<UserEntity> {
         console.log(payload)
-        const {userdetails} = payload
+        const {username, id} = payload
 
         const queryBuilder = this.userRepository.createQueryBuilder("user");
         queryBuilder
         .select(['user.id', 'user.username', 'user.password', 'user.salt'])
-        .where('user.username = :username', { username: userdetails })
+        .where('user.username = :username', { username: username, id })
 
         const user = await queryBuilder.getOne()
 

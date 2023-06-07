@@ -1,3 +1,5 @@
+import {v4 as uuid} from "uuid"
 export interface JwtPayload {
-    userdetails: string;
+    username: string;
+    id: string
 }

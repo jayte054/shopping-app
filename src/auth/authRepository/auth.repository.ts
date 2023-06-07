@@ -69,7 +69,7 @@ export class UserRepository extends Repository<UserEntity> {
         const user = await queryBuilder.getOne();
       
         if (user && (await user.validatePassword(password))) {
-          return {user};
+          return {id:user.id, username:user.username};
         } else {
           return null;
         }
