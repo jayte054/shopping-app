@@ -24,7 +24,7 @@ export class ShoppingController {
         return this.shoppingService.getitems(filterDto, user)
     }
 
-    @Post("/create-list")
+    @Post("/createlist")
     @UsePipes(ValidationPipe)
     createList(@Body() createListDto: CreateListDto,
     @GetUser() user: UserEntity

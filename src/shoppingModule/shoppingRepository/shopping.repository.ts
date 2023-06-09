@@ -5,6 +5,7 @@ import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 import { InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { UserEntityData } from "src/auth/userEntity/userEntityData";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 
 @Injectable()
@@ -45,7 +46,7 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             user: UserEntity
             ): Promise<ShoppingEntity> {
             const {item, price} = createListDto
-    
+            // const {id, username} = userData
             const list = new ShoppingEntity()
             list.item = item;
             list.price = price;
@@ -112,7 +113,7 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
 
         deleteItem = async(
             id: string,
-            user: UserEntity 
+            user: UserEntityData 
             ): Promise<string> => {
             const result = await this.delete({id, userId: user.id})
             

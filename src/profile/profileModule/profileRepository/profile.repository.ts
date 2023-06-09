@@ -41,6 +41,7 @@ export class ProfileRepository extends Repository<ProfileEntity> {
         profile.phoneNumber = phoneNumber
         profile.address = address
         profile.user = user
+        console.log(profile.user)
 
         try{
             await profile.save()
