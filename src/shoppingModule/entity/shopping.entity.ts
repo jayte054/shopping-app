@@ -6,7 +6,7 @@ import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 
 @Entity()
 export class ShoppingEntity extends BaseEntity {
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn()
     id: string;
 
     @Column()
@@ -21,6 +21,8 @@ export class ShoppingEntity extends BaseEntity {
     @ManyToOne(type => UserEntity, user => user.items, {eager: false})
     user: UserEntity
 
+    @Column({ default: new Date() })
+    date: string;
 
     @Column()
     userId: string

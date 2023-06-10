@@ -50,6 +50,11 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             const list = new ShoppingEntity()
             list.item = item;
             list.price = price;
+            list.date = new Date().toLocaleDateString('en-US', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              });;
             list.user = user
             list.status = ShoppingStatus.NOT_PAID
 
