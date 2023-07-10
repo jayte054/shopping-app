@@ -1,12 +1,14 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as sgMail from "@sendgrid/mail";
 import { Logger } from "@nestjs/common";
+import {config} from "dotenv"
 
+config()
 @Injectable()
 export class MailerService {
     private logger = new Logger("mailerService")
     constructor() {
-        sgMail.setApiKey("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");
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       }
 
     async sendWelcomeMail( username: string): Promise<void>{
