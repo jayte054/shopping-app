@@ -1,6 +1,7 @@
 
 
 import {  Injectable } from "@nestjs/common";
+import { MailerService } from "src/mailer/mailer.service";
 import { UserEntity } from "../userEntity/user.entity";
 import { ConflictException, InternalServerErrorException } from "@nestjs/common/exceptions";
 import {Repository, DataSource} from "typeorm"
@@ -10,7 +11,8 @@ import * as bcrypt from "bcrypt"
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
     constructor(
-        private dataSource: DataSource
+        private dataSource: DataSource,
+        private readonly mailerService: MailerService
     ){
         super(UserEntity, dataSource.createEntityManager())
     }
@@ -25,6 +27,7 @@ export class UserRepository extends Repository<UserEntity> {
 
         try{
         await user.save()
+        await this.mailerService.sendWelcomeMail( user.username)
         console.log(user)
         }catch(error){
             if(error.code === "23505") {

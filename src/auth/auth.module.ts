@@ -9,10 +9,12 @@ import { UserEntity } from './userEntity/user.entity';
 import { UserRepository } from './authRepository/auth.repository';
 import * as config from "config"
 import { UserEntityData } from './userEntity/userEntityData';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 const jwtConfig = config.get("jwt")
 @Module({
   imports: [
+    MailerModule,
     PassportModule.register({defaultStrategy: "jwt"}),
     JwtModule.register({
       secret: process.env.JWT_SECRET || jwtConfig.secret,

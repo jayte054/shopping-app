@@ -1,8 +1,8 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 import { ShoppingEntity } from "src/shoppingModule/entity/shopping.entity";
+import { DirectoryEntity } from "src/directory/directoryEntity/directory.entity";
 import { ProfileEntity } from "src/profile/profileEntity/profile.entity";
-import { UserEntityData } from "src/auth/userEntity/userEntityData";
 import * as config from "config"
 
 const dbConfig = config.get("db")
@@ -13,6 +13,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: process.env.RDS_USERNAME || dbConfig.username,
     password: process.env.RDS_PASSWORD || dbConfig.password,
     database: process.env.RDS_DB_NAME || dbConfig.database,
-    entities: [ShoppingEntity,ProfileEntity, UserEntity ],
+    entities: [ShoppingEntity, ProfileEntity, DirectoryEntity, UserEntity ],
     synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize
 }

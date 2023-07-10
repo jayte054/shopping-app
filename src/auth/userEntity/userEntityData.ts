@@ -3,9 +3,11 @@ import { ShoppingEntity } from "src/shoppingModule/entity/shopping.entity";
 import { UserEntity } from "./user.entity";
 import * as bcrypt from "bcrypt"
 import { ProfileEntity } from "src/profile/profileEntity/profile.entity";
+import { DirectoryEntity } from "src/directory/directoryEntity/directory.entity";
 
 export interface UserEntityData  {
     id: string;
+
     username: string;
     
     password: string
@@ -16,6 +18,8 @@ export interface UserEntityData  {
     
     // @OneToMany(() => ProfileEntity, (profile) => profile.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
     profiles: ProfileEntity[];
+
+    // directory: DirectoryEntity[];
 
     // async validatePassword(password: string): Promise<boolean> {
     //     const hash = await bcrypt.hash(password, this.salt)
