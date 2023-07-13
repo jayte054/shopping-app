@@ -40,16 +40,7 @@ export class ShoppingService {
     async createList(
         createListDto: CreateListDto,
         user: UserEntity
-        ): Promise<ShoppingEntity> {
-        // const {item, price} = createListDto
-
-        // const list = new ShoppingEntity()
-        // list.item = item;
-        // list.price = price;
-        // list.status = ShoppingStatus.NOT_PAID
-        // await list.save()
-
-        // return list    
+        ): Promise<ShoppingEntity> {   
 
         return await this.shoppingRepository.createList(createListDto, user)
     }

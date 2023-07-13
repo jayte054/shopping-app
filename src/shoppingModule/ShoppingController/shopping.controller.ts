@@ -31,7 +31,6 @@ export class ShoppingController {
     ): Promise<ShoppingEntity> {
         
         this.logger.verbose(`User  just created a new list. Data: ${createListDto}`)
-        console.log(createListDto, user)
         console.log(this.shoppingService.createList(createListDto, user))
         return this.shoppingService.createList(createListDto, user)
     }

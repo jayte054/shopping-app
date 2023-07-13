@@ -43,8 +43,8 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
         async createList(
             createListDto: CreateListDto,
             user: UserEntity
-            ): Promise<ShoppingEntity> {
-                
+            ): Promise<ShoppingEntity| any> {
+
             const {item, price} = createListDto
 
             const list = new ShoppingEntity()
@@ -70,16 +70,16 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             //   })
             try{
                 // delete list.user
-            return await list.save()
+             await list.save()
             }catch(error){
                 console.error(error)
                 this.logger.error(`user "${user}" failed to create list. Data: ${createListDto}`)
                 throw new InternalServerErrorException()
             }
 
-            // delete list.user
+            delete list.user
     
-            // return list    
+            return {item: list.item, price: list.price, status: list.status, date: list.date }   
         }
 
         async getItemWithId(

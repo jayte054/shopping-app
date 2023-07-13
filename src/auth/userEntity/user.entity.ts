@@ -25,7 +25,7 @@ export class UserEntity extends BaseEntity {
     @Column({default: false})
     isAdmin: boolean;
 
-    @OneToMany(type => ShoppingEntity, item => item.user, {eager: true})
+    @OneToMany(() => ShoppingEntity, item => item.user, {eager: true})
     items: ShoppingEntity[];
 
 

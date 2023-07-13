@@ -17,7 +17,7 @@ export class ShoppingEntity extends BaseEntity {
     @Column()
     status: ShoppingStatus;
 
-    @ManyToOne(type => UserEntity, user => user.items, {eager: false})
+    @ManyToOne(() => UserEntity, user => user.items, {eager: false})
     user: UserEntity
 
     @Column({ default: new Date() })
