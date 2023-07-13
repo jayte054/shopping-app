@@ -5,7 +5,6 @@ import { GetItemsFilterDto } from "src/dto/getItems.filter.dto.ts/getItemfilter.
 import { CreateListDto } from "src/dto/createListDto/createList.dto";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
 import { InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { UserEntityData } from "src/auth/userEntity/userEntityData";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 
 @Injectable()
@@ -45,8 +44,9 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
             createListDto: CreateListDto,
             user: UserEntity
             ): Promise<ShoppingEntity> {
+                
             const {item, price} = createListDto
-            // const {id, username} = userData
+
             const list = new ShoppingEntity()
             list.item = item;
             list.price = price;
@@ -57,18 +57,29 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
               });;
             list.user = user
             list.status = ShoppingStatus.NOT_PAID
-
+            //   const list = this.create({
+            //     item,
+            //     price,
+            //     date: new Date().toLocaleDateString('en-US', {
+            //             day: '2-digit',
+            //             month: '2-digit',
+            //             year: 'numeric',
+            //           }),
+            //     user,
+            //     status: ShoppingStatus.NOT_PAID
+            //   })
             try{
-            await list.save()
+                // delete list.user
+            return await list.save()
             }catch(error){
                 console.error(error)
                 this.logger.error(`user "${user}" failed to create list. Data: ${createListDto}`)
                 throw new InternalServerErrorException()
             }
 
-            delete list.user
+            // delete list.user
     
-            return list    
+            // return list    
         }
 
         async getItemWithId(
@@ -118,7 +129,7 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
 
         deleteItem = async(
             id: string,
-            user: UserEntityData 
+            user: UserEntity
             ): Promise<string> => {
             const result = await this.delete({id, userId: user.id})
             

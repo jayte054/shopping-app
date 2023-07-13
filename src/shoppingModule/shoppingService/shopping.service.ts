@@ -51,7 +51,7 @@ export class ShoppingService {
 
         // return list    
 
-        return this.shoppingRepository.createList(createListDto, user)
+        return await this.shoppingRepository.createList(createListDto, user)
     }
 
     async getItemWithId(

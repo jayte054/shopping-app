@@ -22,6 +22,9 @@ export class UserEntity extends BaseEntity {
     @Column()
     salt: string;
 
+    @Column({default: false})
+    isAdmin: boolean;
+
     @OneToMany(type => ShoppingEntity, item => item.user, {eager: true})
     items: ShoppingEntity[];
 
@@ -29,8 +32,8 @@ export class UserEntity extends BaseEntity {
     @OneToMany(() => ProfileEntity, (profile) => profile.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
     profiles: ProfileEntity[];
 
-    // @OneToMany(() => DirectoryEntity, (directory) => directory.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
-    // directory: DirectoryEntity[];
+    @OneToMany(() => DirectoryEntity, (directory) => directory.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
+    directory: DirectoryEntity[];
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

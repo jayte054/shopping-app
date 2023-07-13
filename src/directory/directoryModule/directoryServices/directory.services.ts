@@ -14,8 +14,18 @@ export class DirectoryService {
 
     async createEntry(
         createDirectoryEntryDto:CreateDirectoryEntryDto,
-        // user: UserEntity
-    ): Promise<DirectoryEntity> {
-        return this.directoryRepository.createEntry(createDirectoryEntryDto)
+        user: UserEntity
+    ): Promise<DirectoryEntity| string> {
+        if(user.isAdmin === true){
+            console.log(user.isAdmin)
+        return this.directoryRepository.createEntry(createDirectoryEntryDto, user)
+    }else{
+        console.log(user)
+      return  "admin privilege required"
+    }
+    }
+
+    async getEntry(): Promise<DirectoryEntity>{
+        return this.directoryRepository.getEntry()
     }
 }

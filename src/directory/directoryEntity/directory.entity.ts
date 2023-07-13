@@ -2,7 +2,7 @@ import { UserEntity } from "src/auth/userEntity/user.entity";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import {v4 as uuid } from "uuid"
 
-Entity()
+@Entity()
 export class DirectoryEntity extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
@@ -16,9 +16,13 @@ export class DirectoryEntity extends BaseEntity {
     @Column()
     walletId: string;
 
-    // @ManyToOne(() => UserEntity, (user) => user.directory, {eager: false})
-    // user: UserEntity;
+    @Column()
+    address: string;
+
+    @ManyToOne(() => UserEntity, (user) => user.directory, {eager: false})
+    user: UserEntity;
 
     @Column()
-    userId: string;
+    userId?: string;
+
 }

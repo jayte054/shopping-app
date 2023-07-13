@@ -1,40 +1,62 @@
-import { InternalServerErrorException } from "@nestjs/common";
+import { InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { Injectable } from "@nestjs/common/decorators";
 import { UserEntity } from "src/auth/userEntity/user.entity";
 import { DirectoryEntity } from "src/directory/directoryEntity/directory.entity";
 import {  CreateDirectoryEntryDto } from "src/dto/createDirectoryEntityDto/createDirectoryEntryDto";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, FindOneOptions, Repository } from "typeorm";
 
 @Injectable()
 export class DirectoryRepository extends Repository<DirectoryEntity>{
+    private logger = new Logger(`directoryRepository`)
     constructor(private dataSource: DataSource){
         super(DirectoryEntity, dataSource.createEntityManager())
     }
 
     async createEntry(
         createDirectoryEntryDto: CreateDirectoryEntryDto,
-        // user: UserEntity
-    ): Promise<DirectoryEntity>{
-        const {name,
-               number,
-               walletId
-            } = createDirectoryEntryDto
+        user: UserEntity | any 
+    ): Promise<DirectoryEntity| any>{
+        
+            const {
+                name,
+                number,
+                walletId,
+                address,
+             } = createDirectoryEntryDto
 
-    const entry = new DirectoryEntity()
-    entry.name = name
-    entry.number = number
-    entry.walletId = walletId
-    // entry.user = user
-
-    try{
-        await entry.save()
-    }catch(error){
-        console.log(error)
-        throw new InternalServerErrorException()
+    
+     const entry = new DirectoryEntity()
+    
+     entry.name = name
+     entry.number = number
+     entry.walletId = walletId
+     entry.address = address
+     entry.user = user
+     console.log(entry.user)
+ 
+     try{
+       
+         await entry.save()
+        
+     }catch(error){
+         console.log(error)
+         this.logger.error("entry unsuccessful")
+         throw new InternalServerErrorException()
+     }
+     return {name: entry.name, number:entry.number, walletId:entry.walletId, address:entry.address }
+   
     }
 
-    return entry 
+    async getEntry(): Promise<DirectoryEntity>{
+        const options: FindOneOptions<DirectoryEntity> = {};
 
+        const directory: any = await this.find(options)
+        if(!directory){
+            this.logger.error(`Directory not found`);
+            throw new NotFoundException(`Directory not found`)
+        }
+
+        return directory
     }
 
 }

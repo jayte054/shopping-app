@@ -10,4 +10,7 @@ export class CreateDirectoryEntryDto {
 
     @IsNotEmpty()
     walletId: string;
+
+    @IsNotEmpty()
+    address: string;
 }

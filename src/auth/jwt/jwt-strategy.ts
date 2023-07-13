@@ -26,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
         const queryBuilder = this.userRepository.createQueryBuilder("user");
         queryBuilder
-        .select(['user.id', 'user.username', 'user.password', 'user.salt'])
+        .select(['user.id', 'user.username', 'user.password', 'user.salt', 'user.isAdmin'])
         .where('user.username = :username', { username: username, id })
 
         const user = await queryBuilder.getOne()

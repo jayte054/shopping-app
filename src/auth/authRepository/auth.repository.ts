@@ -17,6 +17,12 @@ export class UserRepository extends Repository<UserEntity> {
         super(UserEntity, dataSource.createEntityManager())
     }
 
+    
+
+    
+
+    //==========user signup =============
+
     async signUp(authCredentialsDto: AuthCredentialsDto): Promise<string> {
         const {username, password} = authCredentialsDto
 
@@ -36,43 +42,30 @@ export class UserRepository extends Repository<UserEntity> {
                 throw new InternalServerErrorException()
             }
         }
-        return "user created successfully"
+        return `user ${JSON.stringify(user.username)}  created successfully`
     }
 
     private async hashedPassword(password: string, salt: string): Promise<string> {
         return await bcrypt.hash(password, salt)
     }
 
-    //=======sign in===============
+   
 
-    // async validateUserPassword(authCredentialsdto: AuthCredentialsDto): Promise<string> {
-    //     const {username, password} = authCredentialsdto 
-
-    //     const user = await this.findOne({
-    //         where: {username},
-    //         select: ['id', 'username', 'password', 'salt'],
-    //     })
-    //     console.log(user)
-
-    //     if(user && (await user.validatePassword(password))) {
-    //         return user.username 
-    //     } else {
-    //         return null
-    //     }
-    // }
+    //======= user sign in===============
+    
 
     async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<any> {
         const { username, password } = authCredentialsDto;
       
         const queryBuilder = this.createQueryBuilder('user');
         queryBuilder
-          .select(['user.id', 'user.username', 'user.password', 'user.salt'])
+          .select(['user.id', 'user.username', 'user.password', 'user.salt', 'user.isAdmin'])
           .where('user.username = :username', { username });
       
         const user = await queryBuilder.getOne();
       
         if (user && (await user.validatePassword(password))) {
-          return {id:user.id, username:user.username};
+          return {id:user.id, username:user.username, isAdmin: user.isAdmin};
         } else {
           return null;
         }

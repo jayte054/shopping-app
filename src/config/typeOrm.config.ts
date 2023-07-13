@@ -13,6 +13,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: process.env.RDS_USERNAME || dbConfig.username,
     password: process.env.RDS_PASSWORD || dbConfig.password,
     database: process.env.RDS_DB_NAME || dbConfig.database,
-    entities: [ShoppingEntity, ProfileEntity, DirectoryEntity, UserEntity ],
+    entities: [ShoppingEntity, ProfileEntity, DirectoryEntity, UserEntity],
     synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize
 }
