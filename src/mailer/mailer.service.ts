@@ -1,33 +1,40 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import * as sgMail from "@sendgrid/mail";
+import * as nodemailer from "nodemailer";
 import { Logger } from "@nestjs/common";
-import {config} from "dotenv"
+import { config } from "dotenv";
 
-config()
+config();
+
 @Injectable()
 export class MailerService {
-    private logger = new Logger("mailerService")
-    constructor() {
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-      }
+  private logger = new Logger("mailerService");
+  private transporter: nodemailer.Transporter;
 
-    async sendWelcomeMail( username: string): Promise<void>{
-        const msg: sgMail.MailDataRequired = {
-            from: "shoppingmanager317@gmail.com",
-            to: username,
-            subject: " Shopping manager ",
-            text: `Dear ${username}, \n\nWelcome to shopping manager, we hope you enjoy the experience`
-        };
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "ashoppingmanager@gmail.com",
+        pass: "nyxuquekzghepsfo",
+      },
+    });
+  }
 
-        try{
-            this.logger.verbose(`user ${username} welcome mail sent successfully`)
-            await sgMail.send(msg);
+  async sendWelcomeMail(username: string): Promise<void> {
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: username,
+      subject: "Shopping Manager",
+      text: `Dear ${username},\n\nWelcome to Shopping Manager! We hope you enjoy the experience.`,
+    };
 
-        }catch(error){
-            console.log(error)
-            this.logger.error(`user ${username} invalid email address`)
-            console.log(new InternalServerErrorException())
-            throw new InternalServerErrorException()
-        }
+    try {
+      this.logger.verbose(`User ${username} welcome mail sent successfully`);
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      this.logger.error(`User ${username} invalid email address`);
+      console.error(error);
+      throw new InternalServerErrorException();
     }
+  }
 }

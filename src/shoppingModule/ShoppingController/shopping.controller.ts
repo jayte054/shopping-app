@@ -9,13 +9,17 @@ import { ShoppingStatusValidationPipe } from "src/pipes/shopping-status-validati
 import { ShoppingEntity } from "../entity/shopping.entity";
 import { ShoppingService } from "../shoppingService/shopping.service";
 import { ShoppingStatus } from "../ShoppingStatusEnum/shopping.status.enum";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Shopper")
 @Controller("shopper")
 @UseGuards(AuthGuard())
 export class ShoppingController {
     private logger = new Logger("ShoppingController")
     constructor(private shoppingService: ShoppingService) {}
 
+    @ApiOperation({summary: "Fetch items from database"})
+    @ApiResponse({status: 201, description: "user items fetched successfully"})
     @Get("/items")
     getItems(@Query(ValidationPipe) filterDto: GetItemsFilterDto,
     @GetUser() user: UserEntity
@@ -24,6 +28,8 @@ export class ShoppingController {
         return this.shoppingService.getitems(filterDto, user)
     }
 
+    @ApiOperation({summary: "Create a list of items"})
+    @ApiResponse({status: 201, description: "shopping list created successfully"})
     @Post("/createlist")
     @UsePipes(ValidationPipe)
     createList(@Body() createListDto: CreateListDto,
@@ -35,6 +41,8 @@ export class ShoppingController {
         return this.shoppingService.createList(createListDto, user)
     }
 
+    @ApiOperation({summary: "Fetch list with respect to id"})
+    @ApiResponse({status: 201, description: "user fetches shopping list with respect to its id"})
     @Get("/:id")
     getItemWithId(@Param("id")id: string,
     @GetUser() user: UserEntity
@@ -43,6 +51,8 @@ export class ShoppingController {
         return this.shoppingService.getItemWithId(id, user)
     }
 
+    @ApiOperation({summary: "update shopping list"})
+    @ApiResponse({status: 201, description: "update a particular shopping list"})
     @Patch("/:id/status")
     updateItem(
         @Param("id") id: string,
@@ -54,7 +64,8 @@ export class ShoppingController {
         this.logger.verbose(`User "${user.username}" just updated list with id "${id}. Status: ${status}. item: ${item}. price: ${price}`)
         return this.shoppingService.updateItem(id, status, user, item, price, )
     }
-
+    @ApiOperation({summary: "delete shopping list"})
+    @ApiResponse({status: 201, description: "user deletes shopping list with respect to its id"})
     @Delete("/:id")
     deleteItem(
         @Param("id") id: string,
