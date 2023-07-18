@@ -4,7 +4,7 @@ import {  Injectable } from "@nestjs/common";
 import { MailerService } from "src/mailer/mailer.service";
 import { UserEntity } from "../userEntity/user.entity";
 import { ConflictException, InternalServerErrorException } from "@nestjs/common/exceptions";
-import {Repository, DataSource, EntityRepository} from "typeorm"
+import {Repository, DataSource,  } from "typeorm"
 import { AuthCredentialsDto } from "../dto/authCredentials.dto";
 import * as bcrypt from "bcrypt"
 import {v4 as uuidV4} from "uuid"
@@ -13,7 +13,6 @@ import { PasswordResetTokenEntity } from "src/passwordResetTokenModule/reset-tok
 import { ResetPasswordDto } from "src/dto/resetPassword.dto/resetPassword.dto";
 
 @Injectable()
-// @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
     constructor(
         private dataSource: DataSource,
@@ -88,11 +87,14 @@ export class UserRepository extends Repository<UserEntity> {
 
         const generateResetToken = (): any => {
             const token = crypto.randomBytes(20).toString("hex");
+            const expiresInMinutes = 10; // Set the desired expiry duration in minutes
+            let expiresAt = new Date();
+            expiresAt.setMinutes(expiresAt.getMinutes() + expiresInMinutes);
             return token
         }
         
         const generateResetLink =(resetToken: string): string => {
-            const resetLink = `localhost:3000/reset-password?token=${resetToken}`
+            const resetLink = `localhost:3002/reset-password?token=${resetToken}`
             return resetLink
         }
         const resetToken = generateResetToken()
@@ -104,28 +106,31 @@ export class UserRepository extends Repository<UserEntity> {
           subject: "Password Reset",
           html:`
           <h1>Password Reset Email</h1>
-          <p> Dear customer you have requested a password rest,
-              please click on the link below; </p>
+          <p> Dear customer you have requested a password rest,</p>
+          <p>please not that the link expires in 10mins</p>
+              <p>click on the link below; </p>
               <p><a href=${resetLink}> ${resetLink}</a></p>
           `
         };
+
+        const getTimestampPlusMinutes = (minutes: number) => {
+            const date = new Date()
+            date.setMinutes(date.getMinutes() + minutes)
+            return date
+        }
+
         const user = await UserEntity.findOne({where:{username}})
-        
-        // if (!user) {
-        //     throw new Error('User not found');
-        //   }
-        // const {id} = user
 
         const passwordResetToken = new PasswordResetTokenEntity()
         passwordResetToken.id = uuidV4()
         console.log(passwordResetToken.id)
         passwordResetToken.resetToken = resetToken
+        passwordResetToken.expiresAt = getTimestampPlusMinutes(20)
         passwordResetToken.user = user
         passwordResetToken.username = username
          try{
           await passwordResetToken.save()
           await transporter.sendMail(mailOptions)
-        // console.log(passwordResetToken)
             
          }catch(error){
             console.log(error)
@@ -136,6 +141,7 @@ export class UserRepository extends Repository<UserEntity> {
             id: passwordResetToken.id,
             resetToken: passwordResetToken.resetToken, 
             username: passwordResetToken.username,
+            expiresAt: passwordResetToken.expiresAt,
             message:"reset token sent successfully"
             } 
      

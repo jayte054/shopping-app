@@ -13,6 +13,9 @@ export class PasswordResetTokenEntity extends BaseEntity {
     @Column()
     resetToken: string;
 
+    @Column({ type: 'timestamp', nullable: true })
+    expiresAt: Date;
+
     @ManyToOne(() => UserEntity, user => user.resetToken, {eager: false})
     user: UserEntity;
 
