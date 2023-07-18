@@ -1,24 +1,26 @@
-
-
+import * as crypto from "crypto"
+import * as nodemailer from "nodemailer";
 import {  Injectable } from "@nestjs/common";
 import { MailerService } from "src/mailer/mailer.service";
 import { UserEntity } from "../userEntity/user.entity";
 import { ConflictException, InternalServerErrorException } from "@nestjs/common/exceptions";
-import {Repository, DataSource} from "typeorm"
+import {Repository, DataSource, EntityRepository} from "typeorm"
 import { AuthCredentialsDto } from "../dto/authCredentials.dto";
 import * as bcrypt from "bcrypt"
+import {v4 as uuidV4} from "uuid"
+import { Gmail_Password, Gmail_User } from "src/config";
+import { PasswordResetTokenEntity } from "src/passwordResetTokenModule/reset-token.entity/passwordResetToken.enitity";
+import { ResetPasswordDto } from "src/dto/resetPassword.dto/resetPassword.dto";
 
 @Injectable()
+// @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
     constructor(
         private dataSource: DataSource,
-        private readonly mailerService: MailerService
+        private readonly mailerService: MailerService,
     ){
         super(UserEntity, dataSource.createEntityManager())
     }
-
-    
-
     
 
     //==========user signup =============
@@ -32,8 +34,9 @@ export class UserRepository extends Repository<UserEntity> {
         user.password = await this.hashedPassword(password, user.salt)
 
         try{
-        await user.save()
+            
         await this.mailerService.sendWelcomeMail( user.username)
+        await user.save()
         console.log(user)
         }catch(error){
             if(error.code === "23505") {
@@ -70,5 +73,72 @@ export class UserRepository extends Repository<UserEntity> {
           return null;
         }
       }
-   
+
+      //======== reset password ==========
+
+      async sendPasswordResetEmail(resetPasswordDto: ResetPasswordDto): Promise<PasswordResetTokenEntity | any> {
+        const {username} = resetPasswordDto
+        const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: Gmail_User ,
+                pass: Gmail_Password,
+            },
+        }) 
+
+        const generateResetToken = (): any => {
+            const token = crypto.randomBytes(20).toString("hex");
+            return token
+        }
+        
+        const generateResetLink =(resetToken: string): string => {
+            const resetLink = `localhost:3000/reset-password?token=${resetToken}`
+            return resetLink
+        }
+        const resetToken = generateResetToken()
+        const resetLink = generateResetLink(resetToken)
+    
+        const mailOptions : nodemailer.SendMailOptions = {
+          from: process.env.EMAIL_USER,
+          to: username,
+          subject: "Password Reset",
+          html:`
+          <h1>Password Reset Email</h1>
+          <p> Dear customer you have requested a password rest,
+              please click on the link below; </p>
+              <p><a href=${resetLink}> ${resetLink}</a></p>
+          `
+        };
+        const user = await UserEntity.findOne({where:{username}})
+        
+        // if (!user) {
+        //     throw new Error('User not found');
+        //   }
+        // const {id} = user
+
+        const passwordResetToken = new PasswordResetTokenEntity()
+        passwordResetToken.id = uuidV4()
+        console.log(passwordResetToken.id)
+        passwordResetToken.resetToken = resetToken
+        passwordResetToken.user = user
+        passwordResetToken.username = username
+         try{
+          await passwordResetToken.save()
+          await transporter.sendMail(mailOptions)
+        // console.log(passwordResetToken)
+            
+         }catch(error){
+            console.log(error)
+          throw new Error("failed to send password reset")
+         }
+
+         return {
+            id: passwordResetToken.id,
+            resetToken: passwordResetToken.resetToken, 
+            username: passwordResetToken.username,
+            message:"reset token sent successfully"
+            } 
+     
+}
+
 }

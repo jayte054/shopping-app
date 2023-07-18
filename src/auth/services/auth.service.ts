@@ -1,9 +1,12 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from '../authRepository/auth.repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailerService } from "src/mailer/mailer.service";
 import { AuthCredentialsDto } from '../dto/authCredentials.dto';
 import { JwtPayload } from '../jwt-interface/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt/dist';
+import { UserEntity } from '../userEntity/user.entity';
+import { ResetPasswordDto } from 'src/dto/resetPassword.dto/resetPassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +14,9 @@ export class AuthService {
     constructor(
         @InjectRepository(UserRepository)
         private userRepository: UserRepository,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private readonly mailerService: MailerService
+
     ){}
 
     // ======= sign up ========
@@ -45,6 +50,11 @@ export class AuthService {
             // "id": id
         }
         return response 
+    }
+
+    async sendPasswordResetEmail(resetPasswordDto: ResetPasswordDto): Promise<void>{
+        this.logger.verbose("reset link sent successfully")
+       return  await this.userRepository.sendPasswordResetEmail(resetPasswordDto)
     }
    
 }

@@ -57,19 +57,7 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
               });;
             list.user = user
             list.status = ShoppingStatus.NOT_PAID
-            //   const list = this.create({
-            //     item,
-            //     price,
-            //     date: new Date().toLocaleDateString('en-US', {
-            //             day: '2-digit',
-            //             month: '2-digit',
-            //             year: 'numeric',
-            //           }),
-            //     user,
-            //     status: ShoppingStatus.NOT_PAID
-            //   })
             try{
-                // delete list.user
              await list.save()
             }catch(error){
                 console.error(error)
@@ -77,7 +65,7 @@ export class ShoppingRepository extends Repository<ShoppingEntity> {
                 throw new InternalServerErrorException()
             }
 
-            delete list.user
+            // delete list.user
     
             return {item: list.item, price: list.price, status: list.status, date: list.date }   
         }

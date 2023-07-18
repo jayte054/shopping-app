@@ -29,7 +29,7 @@ export class ProfileRepository extends Repository<ProfileEntity> {
     async createProfile(
         createProfileDto: CreateProfileDto,
         user: UserEntity
-    ): Promise<ProfileEntity> {
+    ): Promise<ProfileEntity | any> {
         const {firstName, 
                lastName,
                phoneNumber,
@@ -41,7 +41,6 @@ export class ProfileRepository extends Repository<ProfileEntity> {
         profile.phoneNumber = phoneNumber
         profile.address = address
         profile.user = user
-        console.log(profile.user)
 
         try{
             await profile.save()
@@ -52,7 +51,10 @@ export class ProfileRepository extends Repository<ProfileEntity> {
         }
 
         delete profile.user
-        return  profile
+        return  {firstName: profile.firstName, 
+                 lastName: profile.lastName,
+                 phoneNumber: profile.phoneNumber,
+                 address: profile.address}
     }
 
     

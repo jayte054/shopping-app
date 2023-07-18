@@ -9,6 +9,7 @@ import { UserEntity } from './userEntity/user.entity';
 import { UserRepository } from './authRepository/auth.repository';
 import * as config from "config"
 import { MailerModule } from 'src/mailer/mailer.module';
+import { PasswordResetTokenEntity } from 'src/passwordResetTokenModule/reset-token.entity/passwordResetToken.enitity';
 
 const jwtConfig = config.get("jwt")
 @Module({
@@ -21,7 +22,7 @@ const jwtConfig = config.get("jwt")
         expiresIn: jwtConfig.expiresIn
       }
     }),
-    TypeOrmModule.forFeature([UserRepository, UserEntity])
+    TypeOrmModule.forFeature([UserRepository, UserEntity, PasswordResetTokenEntity])
   ],
   controllers: [AuthController],
   providers: [AuthService, 

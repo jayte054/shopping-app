@@ -32,13 +32,12 @@ export class ShoppingController {
     @ApiResponse({status: 201, description: "shopping list created successfully"})
     @Post("/createlist")
     @UsePipes(ValidationPipe)
-    createList(@Body() createListDto: CreateListDto,
+     createList(@Body() createListDto: CreateListDto,
     @GetUser() user: UserEntity
     ): Promise<ShoppingEntity> {
         
         this.logger.verbose(`User  just created a new list. Data: ${createListDto}`)
-        console.log(this.shoppingService.createList(createListDto, user))
-        return this.shoppingService.createList(createListDto, user)
+        return  this.shoppingService.createList(createListDto, user)
     }
 
     @ApiOperation({summary: "Fetch list with respect to id"})

@@ -1,9 +1,11 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as nodemailer from "nodemailer";
 import { Logger } from "@nestjs/common";
-import { config } from "dotenv";
+import {config} from "dotenv";
+import crypto from "crypto"
+import { Gmail_Password, Gmail_User } from "src/config";
 
-config();
+
 
 @Injectable()
 export class MailerService {
@@ -14,8 +16,8 @@ export class MailerService {
     this.transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: "ashoppingmanager@gmail.com",
-        pass: "nyxuquekzghepsfo",
+        user: Gmail_User ,
+        pass: Gmail_Password,
       },
     });
   }
@@ -25,16 +27,21 @@ export class MailerService {
       from: process.env.EMAIL_USER,
       to: username,
       subject: "Shopping Manager",
-      text: `Dear ${username},\n\nWelcome to Shopping Manager! We hope you enjoy the experience.`,
+      text: `
+      <h1> Welcome Mail </h1>
+      <p>Dear ${username},\n\nWelcome to Shopping Manager! We hope you enjoy the experience.</p>
+      `,
     };
 
     try {
-      this.logger.verbose(`User ${username} welcome mail sent successfully`);
       await this.transporter.sendMail(mailOptions);
+      this.logger.verbose(`User ${username} welcome mail sent successfully`);
     } catch (error) {
       this.logger.error(`User ${username} invalid email address`);
       console.error(error);
       throw new InternalServerErrorException();
     }
   }
+
+
 }

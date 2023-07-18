@@ -6,6 +6,7 @@ import * as bcrypt from "bcrypt"
 import { ShoppingEntity } from "src/shoppingModule/entity/shopping.entity";
 import { ProfileEntity } from "../../profile/profileEntity/profile.entity";
 import { DirectoryEntity } from "src/directory/directoryEntity/directory.entity";
+import { PasswordResetTokenEntity } from "src/passwordResetTokenModule/reset-token.entity/passwordResetToken.enitity";
 
 @Entity()
 @Unique(["username"])
@@ -34,6 +35,9 @@ export class UserEntity extends BaseEntity {
 
     @OneToMany(() => DirectoryEntity, (directory) => directory.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
     directory: DirectoryEntity[];
+
+    @OneToMany(() => PasswordResetTokenEntity, (resetToken) => resetToken.user, {eager : true}) // Adjust the relationship according to your entity names and configuration
+    resetToken: PasswordResetTokenEntity[];
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

@@ -12,17 +12,17 @@ const serverConfig = config.get("server")
   app.enableCors({origin: "http://localhost:3000"})
 
 // swagger configuration
-const options = new DocumentBuilder()
-.setTitle("Shopping App Manager")
-.setDescription("App designed to help people create shopping itenary and book it with stores")
-.setVersion("1.0")
-.build()
+  const options = new DocumentBuilder()
+  .setTitle("Shopping App Manager")
+  .setDescription("App designed to help people create shopping itenary and book it with stores")
+  .setVersion("1.0")
+  .build()
 
-//swagger Document
-const document = SwaggerModule.createDocument(app, options)
+  //swagger Document
+  const document = SwaggerModule.createDocument(app, options)
 
-//swagger UI endpoint
-SwaggerModule.setup("api", app, document)
+  //swagger UI endpoint
+  SwaggerModule.setup("api", app, document)
 
   const port = process.env.PORT || serverConfig.port
   await app.listen(port);
