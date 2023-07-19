@@ -7,6 +7,7 @@ import { JwtPayload } from '../jwt-interface/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt/dist';
 import { UserEntity } from '../userEntity/user.entity';
 import { ResetPasswordDto } from 'src/dto/resetPassword.dto/resetPassword.dto';
+import { PasswordResetDto } from 'src/dto/passwordResetDto/passwordReset.Dto';
 
 @Injectable()
 export class AuthService {
@@ -47,7 +48,6 @@ export class AuthService {
         const response = {
             "accessToken": accessToken,
             "user": userdetails
-            // "id": id
         }
         return response 
     }
@@ -55,6 +55,10 @@ export class AuthService {
     async sendPasswordResetEmail(resetPasswordDto: ResetPasswordDto): Promise<void>{
         this.logger.verbose("reset link sent successfully")
        return  await this.userRepository.sendPasswordResetEmail(resetPasswordDto)
+    }
+
+    async resetPassword(passwordResetDto: PasswordResetDto) : Promise<string> {
+        return await this.userRepository.resetPassword(passwordResetDto)
     }
    
 }

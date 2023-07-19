@@ -3,6 +3,7 @@ import { AuthCredentialsDto } from '../dto/authCredentials.dto';
 import { AuthService } from '../services/auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from 'src/dto/resetPassword.dto/resetPassword.dto';
+import { PasswordResetDto } from 'src/dto/passwordResetDto/passwordReset.Dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -30,5 +31,12 @@ export class AuthController {
     @Post("/resetEmail")
     async sendEmail(@Body() resetPasswordDto: ResetPasswordDto): Promise<void>{
         return await this.authservice.sendPasswordResetEmail(resetPasswordDto)
+    }
+
+    @ApiOperation({summary: "reset the password"})
+    @ApiResponse({status: 201, description: "run a check on the database to check that the token is valid"})
+    @Post("/resetPassword")
+    async resetPassword(@Body() passwordResetDto: PasswordResetDto): Promise<string> {
+        return await this.authservice.resetPassword(passwordResetDto)
     }
 }

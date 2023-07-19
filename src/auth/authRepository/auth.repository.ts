@@ -1,9 +1,9 @@
 import * as crypto from "crypto"
 import * as nodemailer from "nodemailer";
-import {  Injectable } from "@nestjs/common";
+import {  Injectable, Logger } from "@nestjs/common";
 import { MailerService } from "src/mailer/mailer.service";
 import { UserEntity } from "../userEntity/user.entity";
-import { ConflictException, InternalServerErrorException } from "@nestjs/common/exceptions";
+import { ConflictException, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common/exceptions";
 import {Repository, DataSource,  } from "typeorm"
 import { AuthCredentialsDto } from "../dto/authCredentials.dto";
 import * as bcrypt from "bcrypt"
@@ -11,9 +11,11 @@ import {v4 as uuidV4} from "uuid"
 import { Gmail_Password, Gmail_User } from "src/config";
 import { PasswordResetTokenEntity } from "src/passwordResetTokenModule/reset-token.entity/passwordResetToken.enitity";
 import { ResetPasswordDto } from "src/dto/resetPassword.dto/resetPassword.dto";
+import { PasswordResetDto } from "src/dto/passwordResetDto/passwordReset.Dto";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
+    private logger = new Logger("AuthService")
     constructor(
         private dataSource: DataSource,
         private readonly mailerService: MailerService,
@@ -108,8 +110,8 @@ export class UserRepository extends Repository<UserEntity> {
           <h1>Password Reset Email</h1>
           <p> Dear customer you have requested a password rest,</p>
           <p>please not that the link expires in 10mins</p>
-              <p>click on the link below; </p>
-              <p><a href=${resetLink}> ${resetLink}</a></p>
+              <p>please copy and paste the token in the token input; </p>
+                <p> ${resetToken}
           `
         };
 
@@ -123,13 +125,16 @@ export class UserRepository extends Repository<UserEntity> {
 
         const passwordResetToken = new PasswordResetTokenEntity()
         passwordResetToken.id = uuidV4()
-        console.log(passwordResetToken.id)
+        // console.log(passwordResetToken.id)
         passwordResetToken.resetToken = resetToken
         passwordResetToken.expiresAt = getTimestampPlusMinutes(20)
         passwordResetToken.user = user
+        // console.log(user)
         passwordResetToken.username = username
          try{
           await passwordResetToken.save()
+          console.log(passwordResetToken)
+          console.log("here")
           await transporter.sendMail(mailOptions)
             
          }catch(error){
@@ -137,7 +142,7 @@ export class UserRepository extends Repository<UserEntity> {
           throw new Error("failed to send password reset")
          }
 
-         return {
+     return {
             id: passwordResetToken.id,
             resetToken: passwordResetToken.resetToken, 
             username: passwordResetToken.username,
@@ -146,5 +151,43 @@ export class UserRepository extends Repository<UserEntity> {
             } 
      
 }
+
+async resetPassword(passwordResetDto: PasswordResetDto): Promise<string | any> {
+    const {token, newPassword} = passwordResetDto
+    try{
+        const resetToken = await PasswordResetTokenEntity.findOne({where: {resetToken: token}})
+        console.log("ihere")
+        console.log(resetToken)
+        if(!resetToken){
+            throw new NotFoundException("Invalid or expired token")
+        }
+    
+        const user = await UserEntity.findOne({where:{ id: resetToken.userId}})
+        // console.log("here")
+        console.log(user.password)
+        console.log(user.salt)
+        const isTokenExpired = resetToken.expiresAt > new Date()
+    
+        if(!isTokenExpired) {
+            throw new UnauthorizedException("token has expired")
+        }
+    
+         user.salt  = await bcrypt.genSalt(10);
+        console.log(user.salt)
+        console.log(newPassword)
+        const hash = await bcrypt.hash(newPassword, user.salt);
+        user.password = hash
+        user.save()
+        resetToken.remove()
+
+        this.logger.verbose("password reset successful")
+        return "password reset successful"
+    }catch(error){
+        console.log(error)
+        // throw error
+        return "password reset unsuccessful"
+    }
+   
+} 
 
 }
