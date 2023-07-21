@@ -163,7 +163,6 @@ async resetPassword(passwordResetDto: PasswordResetDto): Promise<string | any> {
         }
     
         const user = await UserEntity.findOne({where:{ id: resetToken.userId}})
-        // console.log("here")
         console.log(user.password)
         console.log(user.salt)
         const isTokenExpired = resetToken.expiresAt > new Date()

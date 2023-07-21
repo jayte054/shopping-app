@@ -31,9 +31,6 @@ export class AuthService {
         const userdetails = await this.userRepository.validateUserPassword(authCredentialsDto)
         console.log(userdetails)
          const {username, id, isAdmin} = userdetails
-        // console.log(username)
-        // const id = userdetails.id
-        // console.log(userdetails)
         
 
         if (!userdetails) {
