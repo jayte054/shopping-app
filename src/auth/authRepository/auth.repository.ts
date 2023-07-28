@@ -12,6 +12,7 @@ import { Gmail_Password, Gmail_User } from "src/config";
 import { PasswordResetTokenEntity } from "src/passwordResetTokenModule/reset-token.entity/passwordResetToken.enitity";
 import { ResetPasswordDto } from "src/dto/resetPassword.dto/resetPassword.dto";
 import { PasswordResetDto } from "src/dto/passwordResetDto/passwordReset.Dto";
+import { DirectoryMailDto } from "src/dto/directorymail/directorymail.dto";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -188,5 +189,15 @@ async resetPassword(passwordResetDto: PasswordResetDto): Promise<string | any> {
     }
    
 } 
+
+async directoryRegister(directoryMailDto: DirectoryMailDto): Promise<string> {
+        const {username} = directoryMailDto
+    try{
+        await this.mailerService.registerOnDirectory(directoryMailDto)
+        return `${username} directory registeration email sent successfully`
+    }catch(error){
+        throw new Error("registeration email unsuccessful")
+    }
+}
 
 }

@@ -4,6 +4,7 @@ import { Logger } from "@nestjs/common";
 import {config} from "dotenv";
 import crypto from "crypto"
 import { Gmail_Password, Gmail_User } from "src/config";
+import { DirectoryMailDto } from "src/dto/directorymail/directorymail.dto";
 
 
 
@@ -40,6 +41,28 @@ export class MailerService {
       this.logger.error(`User ${username} invalid email address`);
       console.error(error);
       throw new InternalServerErrorException();
+    }
+  }
+
+  async registerOnDirectory(directoryMailDto: DirectoryMailDto): Promise<void> {
+    const {username} = directoryMailDto
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: process.env.EMAIL_USER,
+      to:username, 
+      subject: "Register On Shopping Mansger Directory",
+      html: `
+         <h1>Resgisteration Request</h1
+
+         <p>I ${username} would like to register my business on your Directory page</p> 
+        `,
+    }
+
+    try{
+      await this.transporter.sendMail(mailOptions);
+      this.logger.verbose(`user ${username} directory registeration mail sent successfully`)
+    }catch(error){
+      this.logger.error(`User ${username} has and invalid email address`);
+      throw new InternalServerErrorException()
     }
   }
 

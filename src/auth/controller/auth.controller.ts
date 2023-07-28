@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from 'src/dto/resetPassword.dto/resetPassword.dto';
 import { PasswordResetDto } from 'src/dto/passwordResetDto/passwordReset.Dto';
+import { DirectoryMailDto } from 'src/dto/directorymail/directorymail.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -38,5 +39,12 @@ export class AuthController {
     @Post("/resetPassword")
     async resetPassword(@Body() passwordResetDto: PasswordResetDto): Promise<string> {
         return await this.authservice.resetPassword(passwordResetDto)
+    }
+
+    @ApiOperation({summary: "reset the password"})
+    @ApiResponse({status:201, description: `request to be on the directory page sent`})
+    @Post("/directorymail")
+    async sendDirectoryRequest(@Body() directoryMailDto:DirectoryMailDto): Promise<string> {
+        return await this.authservice.registerDirectoryPage(directoryMailDto)
     }
 }

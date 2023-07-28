@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt/dist';
 import { UserEntity } from '../userEntity/user.entity';
 import { ResetPasswordDto } from 'src/dto/resetPassword.dto/resetPassword.dto';
 import { PasswordResetDto } from 'src/dto/passwordResetDto/passwordReset.Dto';
+import { DirectoryMailDto } from 'src/dto/directorymail/directorymail.dto';
 
 @Injectable()
 export class AuthService {
@@ -56,6 +57,10 @@ export class AuthService {
 
     async resetPassword(passwordResetDto: PasswordResetDto) : Promise<string> {
         return await this.userRepository.resetPassword(passwordResetDto)
+    }
+
+    async registerDirectoryPage(directoryMailDto: DirectoryMailDto): Promise<string> {
+        return await this.userRepository.directoryRegister(directoryMailDto)
     }
    
 }
