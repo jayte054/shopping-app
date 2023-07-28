@@ -48,12 +48,12 @@ export class MailerService {
     const {username} = directoryMailDto
     const mailOptions: nodemailer.SendMailOptions = {
       from: process.env.EMAIL_USER,
-      to:username, 
+      to: "shoppingmanager317@gmail.com", 
       subject: "Register On Shopping Mansger Directory",
       html: `
          <h1>Resgisteration Request</h1
 
-         <p>I ${username} would like to register my business on your Directory page</p> 
+         <p>I <a>${username}</a> would like to register my business on your Directory page</p> 
         `,
     }
 
