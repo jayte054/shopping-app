@@ -1,0 +1,10 @@
+# render.yaml
+
+services:
+  - name: web service
+    type: web
+    buildCommand: yarn install
+    startCommand: yarn start
+    env:
+      - key: NODE_VERSION
+        value: 16
