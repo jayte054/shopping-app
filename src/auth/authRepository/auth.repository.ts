@@ -110,6 +110,7 @@ export class UserRepository extends Repository<UserEntity> {
           html:`
           <h1>Password Reset Email</h1>
           <p> Dear customer you have requested a password rest,</p>
+          
           <p>please not that the link expires in 10mins</p>
               <p>please copy and paste the token in the token input; </p>
                 <p> ${resetToken}
