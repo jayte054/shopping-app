@@ -39,12 +39,12 @@ export class UserRepository extends Repository<UserEntity> {
             
         await this.mailerService.sendWelcomeMail( user.username)
         await user.save()
-        console.log(user)
         }catch(error){
             if(error.code === "23505") {
                 throw new ConflictException("username already exists")
             } else {
-                throw new InternalServerErrorException()
+                // throw new InternalServerErrorException()
+                return "error creating new user"
             }
         }
         return `user ${JSON.stringify(user.username)}  created successfully`

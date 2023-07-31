@@ -32,22 +32,26 @@ export class AuthService {
         const userdetails = await this.userRepository.validateUserPassword(authCredentialsDto)
         console.log(userdetails)
          const {username, id, isAdmin} = userdetails
+        try{
+            if (!userdetails) {
+                throw new UnauthorizedException("invalid credentials")
+            }
+    
+            const payload: JwtPayload = { username, id };
+            console.log(payload)
+            const accessToken = await this.jwtService.sign(payload)
+            console.log(accessToken)
+            this.logger.debug(`Generated JWT Token with payload: ${JSON.stringify(payload)}`)
+            const response = {
+                "accessToken": accessToken,
+                "user": userdetails
+            }
+            return response 
+        }catch(error){
+            throw new Error("incorrect user details") 
+        }
+
         
-
-        if (!userdetails) {
-            throw new UnauthorizedException("invalid credentials")
-        }
-
-        const payload: JwtPayload = { username, id };
-        console.log(payload)
-        const accessToken = await this.jwtService.sign(payload)
-        console.log(accessToken)
-        this.logger.debug(`Generated JWT Token with payload: ${JSON.stringify(payload)}`)
-        const response = {
-            "accessToken": accessToken,
-            "user": userdetails
-        }
-        return response 
     }
 
     async sendPasswordResetEmail(resetPasswordDto: ResetPasswordDto): Promise<void>{
