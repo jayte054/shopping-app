@@ -3,7 +3,7 @@
 services:
   - name: web service
     type: web
-    buildCommand: yarn build
+    buildCommand: yarn; yarn build
     startCommand: yarn start:prod
     env:
       - key: NODE_VERSION
