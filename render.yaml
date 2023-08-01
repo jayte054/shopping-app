@@ -4,7 +4,7 @@ services:
   - name: web service
     type: web
     buildCommand: yarn build
-    startCommand: yarn start
+    startCommand: yarn start:prod
     env:
       - key: NODE_VERSION
         value: 16
