@@ -7,4 +7,4 @@ services:
     startCommand: yarn start
     env:
       - key: NODE_VERSION
-        value: v16.15.1
+        value: 16
