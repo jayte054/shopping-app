@@ -90,7 +90,7 @@ export class UserRepository extends Repository<UserEntity> {
 
         const generateResetToken = (): any => {
             const token = crypto.randomBytes(20).toString("hex");
-            const expiresInMinutes = 10; // Set the desired expiry duration in minutes
+            const expiresInMinutes = 10; 
             let expiresAt = new Date();
             expiresAt.setMinutes(expiresAt.getMinutes() + expiresInMinutes);
             return token
