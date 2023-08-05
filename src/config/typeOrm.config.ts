@@ -16,10 +16,10 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     database: process.env.RDS_DB_NAME || dbConfig.database,
     entities: [ShoppingEntity, ProfileEntity, DirectoryEntity, UserEntity, PasswordResetTokenEntity],
     synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
-    ssl : true,
-    extra : {
-    ssl : {
-      rejectUnauthorized: false
-    }
-}
+    // ssl : true,
+    // extra : {
+    // ssl : {
+    //   rejectUnauthorized: false
+    // }
+//}
 }
