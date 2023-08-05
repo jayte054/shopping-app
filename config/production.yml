@@ -2,7 +2,7 @@ db:
   host: "dpg-cj60vcivvtos73fb2fmg-a.oregon-postgres.render.com"
   username: "shopping_manager_user"
   password: "iPjHiPNno5BBxvNljLw7hCtVfeuorBWi"
-  synchronize: true
+  synchronize: false
 
 jwt:
   secret: "topSecret51"
