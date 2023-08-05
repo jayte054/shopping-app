@@ -15,5 +15,11 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     password: process.env.RDS_PASSWORD || dbConfig.password,
     database: process.env.RDS_DB_NAME || dbConfig.database,
     entities: [ShoppingEntity, ProfileEntity, DirectoryEntity, UserEntity, PasswordResetTokenEntity],
-    synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize
+    synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
+    ssl : true,
+    extra : {
+    ssl : {
+      rejectUnauthorized: false
+    }
+}
 }
