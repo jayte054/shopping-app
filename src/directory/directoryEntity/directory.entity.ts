@@ -19,6 +19,16 @@ export class DirectoryEntity extends BaseEntity {
     @Column()
     address: string;
 
+    @Column(
+        // { type: 'decimal', precision: 10, scale: 8, nullable: true }
+        ) 
+    latitude: string;
+  
+    @Column(
+        // { type: 'decimal', precision: 10, scale: 8, nullable: true }
+    ) 
+    longitude: string;
+
     @ManyToOne(() => UserEntity, (user) => user.directory, {eager: false})
     user: UserEntity;
 

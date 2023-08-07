@@ -17,10 +17,10 @@ export class DirectoryService {
         user: UserEntity
     ): Promise<DirectoryEntity| string> {
         if(user.isAdmin === true){
-            console.log(user.isAdmin)
+            // console.log(user.isAdmin)
         return this.directoryRepository.createEntry(createDirectoryEntryDto, user)
     }else{
-        console.log(user)
+        // console.log(user)
       return  "admin privilege required"
     }
     }

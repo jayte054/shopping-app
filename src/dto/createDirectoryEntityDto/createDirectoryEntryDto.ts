@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsNumber, Max, Min } from "class-validator";
 
 
 export class CreateDirectoryEntryDto {
@@ -13,4 +13,16 @@ export class CreateDirectoryEntryDto {
 
     @IsNotEmpty()
     address: string;
+
+    @IsNotEmpty()
+    // @Min(-90)
+    // @Max(90)
+    // @IsNumber() 
+    latitude: string;
+    
+    @IsNotEmpty()
+    // @Min(-180)
+    // @Max(180)
+    // @IsNumber() 
+    longitude: string;
 }

@@ -4,6 +4,7 @@ import { UserEntity } from "src/auth/userEntity/user.entity";
 import { DirectoryEntity } from "src/directory/directoryEntity/directory.entity";
 import {  CreateDirectoryEntryDto } from "src/dto/createDirectoryEntityDto/createDirectoryEntryDto";
 import { DataSource, FindOneOptions, Repository } from "typeorm";
+import {v4 as uuid} from "uuid"
 
 @Injectable()
 export class DirectoryRepository extends Repository<DirectoryEntity>{
@@ -17,33 +18,42 @@ export class DirectoryRepository extends Repository<DirectoryEntity>{
         user: UserEntity | any 
     ): Promise<DirectoryEntity| any>{
         
+        
             const {
                 name,
                 number,
                 walletId,
                 address,
+                latitude,
+                longitude
              } = createDirectoryEntryDto
 
-    
+            //  const roundedLatitude = Math.round(latitude * 1e8) / 1e8;
+            //  const roundedLongitude = Math.round(longitude * 1e8) / 1e8;
+
      const entry = new DirectoryEntity()
-    
+     entry.id = uuid()
      entry.name = name
      entry.number = number
      entry.walletId = walletId
      entry.address = address
      entry.user = user
-     console.log(entry.user)
+     entry.latitude = latitude
+     entry.longitude = longitude
  
      try{
-       
          await entry.save()
         
      }catch(error){
-         console.log(error)
          this.logger.error("entry unsuccessful")
          throw new InternalServerErrorException()
      }
-     return {name: entry.name, number:entry.number, walletId:entry.walletId, address:entry.address }
+     return {name: entry.name, 
+             number:entry.number, 
+             walletId:entry.walletId, 
+             address:entry.address, 
+             latitude:entry.latitude, 
+             longitude: entry.longitude }
    
     }
 
