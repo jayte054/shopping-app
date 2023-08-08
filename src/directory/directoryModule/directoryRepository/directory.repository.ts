@@ -43,8 +43,10 @@ export class DirectoryRepository extends Repository<DirectoryEntity>{
  
      try{
         // if(user.isAdmin === true) {
+            console.log("here")
          await entry.save()
-        // } else {
+            console.log("here")
+            // } else {
         //     return "admin priviledge required"
         // }
         
