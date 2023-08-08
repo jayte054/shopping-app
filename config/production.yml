@@ -1,8 +1,8 @@
 # db:
-#   host: "dpg-cj60vcivvtos73fb2fmg-a.oregon-postgres.render.com"
-#   username: "shopping_manager_user"
-#   password: "iPjHiPNno5BBxvNljLw7hCtVfeuorBWi"
-#   synchronize: true
+#   host: "dpg-cj9avq2vvtos73d3s250-a.oregon-postgres.render.com"
+#   username: "shopping_manager_2489_user"
+#   password: "pHyypnNoGNekKRH6WyaC221tnO7HoE7s"
+#   synchronize: false
 
 # jwt:
 #   secret: "topSecret51"
