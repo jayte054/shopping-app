@@ -28,9 +28,9 @@ export class MailerService {
       from: process.env.EMAIL_USER,
       to: username,
       subject: "Shopping Manager",
-      html: `
-      <h1> Welcome Mail </h1>
-      <p>Dear ${username},\n\nWelcome to Shopping Manager! We hope you enjoy the experience.</p>
+      text: `
+       Welcome Mail 
+      Dear ${username},\n\nWelcome to Shopping Manager! We hope you enjoy the experience.
       `,
     };
 

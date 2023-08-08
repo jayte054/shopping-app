@@ -42,7 +42,11 @@ export class DirectoryRepository extends Repository<DirectoryEntity>{
      entry.longitude = longitude
  
      try{
+        if(user.isAdmin === true) {
          await entry.save()
+        } else {
+            return "admin priviledge required"
+        }
         
      }catch(error){
          this.logger.error("entry unsuccessful")
