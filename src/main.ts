@@ -3,18 +3,14 @@ import {Logger} from "@nestjs/common"
 import { AppModule } from './app.module';
 import * as config from "config"
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Allow } from 'class-validator';
 
 async function bootstrap() {
 const serverConfig = config.get("server")
   const logger = new Logger("bootstrap")
   const app = await NestFactory.create(AppModule);
   
-  app.enableCors({origin: 
-    // "http://localhost:3000"
-    ["https://shoppingmanager-e0qgq7z5l-jayte054.vercel.app/",
-    "http://shoppingmanager-e0qgq7z5l-jayte054.vercel.app/",
-    "https://shoppingmanager.vercel.app/"]
-  })
+  app.enableCors({origin: "*",})
 
 // swagger configuration
   const options = new DocumentBuilder()
