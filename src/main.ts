@@ -9,7 +9,10 @@ const serverConfig = config.get("server")
   const logger = new Logger("bootstrap")
   const app = await NestFactory.create(AppModule);
   
-  app.enableCors({origin: "http://localhost:3000"})
+  app.enableCors({origin: 
+    // "http://localhost:3000"
+    "https://shoppingmanager.vercel.app/signup"
+  })
 
 // swagger configuration
   const options = new DocumentBuilder()
