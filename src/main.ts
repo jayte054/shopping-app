@@ -11,7 +11,7 @@ const serverConfig = config.get("server")
   
   app.enableCors({origin: 
     // "http://localhost:3000"
-    "https://shoppingmanager.vercel.app/signup"
+    "https://shoppingmanager-e0qgq7z5l-jayte054.vercel.app/"
   })
 
 // swagger configuration
